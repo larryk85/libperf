@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stropts.h>
+#include <sys/ioctl.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -40,7 +40,7 @@
 
 #include "libperf.h"
 
-#define __LIBPERF_MAX_COUNTERS 32 
+#define __LIBPERF_MAX_COUNTERS 32
 #define __LIBPERF_ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 /* lib struct */
@@ -268,7 +268,7 @@ libperf_readcounter(struct libperf_data *pd, int counter)
 
   assert(read(pd->fds[counter], &value, sizeof(uint64_t)) ==
          sizeof(uint64_t));
-  
+
   return value;
 }
 
@@ -288,7 +288,7 @@ libperf_disablecounter(struct libperf_data *pd, int counter)
   assert(counter >= 0 && counter < __LIBPERF_MAX_COUNTERS);
   if (pd->fds[counter] == -1)
     return 0;
-  
+
   return ioctl(pd->fds[counter], PERF_EVENT_IOC_DISABLE);
 }
 
@@ -302,7 +302,7 @@ libperf_close(struct libperf_data *pd)
     assert(pd->fds[i] >= 0);
     close(pd->fds[i]);
   }
-  
+
   fclose(pd->log);
   free(pd->attrs);
   free(pd);
@@ -328,7 +328,7 @@ libperf_unit_test(void *n)
 
   fprintf(pd->log, "libperf_readcounter[0]: %" PRIu64 "\n",
           libperf_readcounter(pd, 0));
-  
+
   libperf_finalize(pd, 0);
   free(x);
   return 0;
